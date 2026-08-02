@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42belgium.be    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 09:06:34 by alexafer          #+#    #+#             */
-/*   Updated: 2026/08/03 01:35:06 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/08/03 01:49:00 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ typedef struct s_woody
 	int		file_len;
 	int		file_pos;
 	int		format;
+	int		pt_note;
 	union
 	{
 		Elf32_Ehdr	elf32;
@@ -40,13 +41,14 @@ typedef struct s_woody
 	} *header;
 
 
-
+	t_list	*elf_ph;
 }	t_woody;
 
 int		extract_ph(t_woody *wood);
 int		extract_header(t_woody *woody);
 
 int		map_file(t_woody *wood, char *path);
+int		elf_seek(t_woody *wood, int seek_pos);
 
 void	*read_elf(t_woody *wood, int size);
 
