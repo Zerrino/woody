@@ -1,34 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   map_file.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alexafer <alexafer@student.42belgium.be    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/08 09:06:22 by alexafer          #+#    #+#             */
-/*   Updated: 2026/08/03 01:34:40 by alexafer         ###   ########.fr       */
+/*   Created: 2026/08/03 00:34:13 by alexafer          #+#    #+#             */
+/*   Updated: 2026/08/03 00:57:23 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "woody_woodpacker.h"
 
-int	main(int argc, char **argv)
+int	map_file(t_woody *wood, char *path)
 {
-	t_woody	wood;
+	struct stat	buffer;
+	int			fd;
+	int			fs;
 
-	if (argc != 2)
+	fd = open(path, O_RDONLY);
+	if (fd < 0)
 		goto error;
-	ft_bzero(&wood, sizeof(t_woody));
-	if (map_file(&wood, argv[1]) == 0)
+	fs = fstat(fd, &buffer);
+	if (fs < 0)
 		goto error;
-	printf("file len : %d\n", wood.file_len);
-	if (extract_header(&wood) == 0)
+	if (S_ISDIR(buffer.st_mode))
 		goto error;
-	if (extract_ph(&wood) == 0)
+	wood->file = mmap(NULL, buffer.st_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
+	if (!wood->file)
 		goto error;
-
-	return (0);
-error:
-	ft_putendl_fd("error", 2);
+	wood->file_len = buffer.st_size;
+	wood->file_pos = 0;
+	close(fd);
 	return (1);
+error:
+	close(fd);
+	return (0);
 }

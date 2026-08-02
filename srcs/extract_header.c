@@ -1,19 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   project.h                                          :+:      :+:    :+:   */
+/*   extract_header.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alexafer <alexafer@student.42belgium.be    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/08 09:06:34 by alexafer          #+#    #+#             */
-/*   Updated: 2026/04/18 15:56:28 by alexafer         ###   ########.fr       */
+/*   Created: 2026/08/02 20:33:04 by alexafer          #+#    #+#             */
+/*   Updated: 2026/08/03 01:32:54 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PROJECT_H
-# define PROJECT_H
+#include "woody_woodpacker.h"
 
-# include "../libft/libft.h"
-# include "get_next_line.h"
+int	extract_header(t_woody *woody)
+{
 
-#endif
+	woody->header = read_elf(woody, 0x40);
+	if (!woody->header)
+		return (0);
+	if (ft_memcmp(woody->header, "\x7F" "ELF", 4))
+		return (0);
+	woody->format = ((char *)woody->header)[EI_CLASS];
+	return (1);
+}

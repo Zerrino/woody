@@ -1,28 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   read_elf.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: alexafer <alexafer@student.42belgium.be    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/23 16:23:11 by alexafer          #+#    #+#             */
-/*   Updated: 2026/01/08 10:38:48 by alexafer         ###   ########.fr       */
+/*   Created: 2026/08/03 00:44:14 by alexafer          #+#    #+#             */
+/*   Updated: 2026/08/03 01:31:19 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#include "woody_woodpacker.h"
 
-# include <unistd.h>
-# include <stdlib.h>
 
-# ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 3
-# endif
+void	*read_elf(t_woody *wood, int size)
+{
+	void	*buffer;
 
-int		slen(char *str);
-int		ft_s(char *str, char c, int n);
-char	*ft_make_it_bigger(char *s1, char *s2);
-char	*get_next_line(int fd);
-
-#endif
+	if (size + wood->file_pos >= wood->file_len)
+		return (0);
+	buffer = &(wood->file)[wood->file_pos];
+	wood->file_pos += size;
+	return (buffer);
+}
