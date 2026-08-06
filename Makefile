@@ -3,14 +3,15 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: alexafer <alexafer@student.42belgium.be    +#+  +:+       +#+         #
+#    By: reborn <reborn@42belgium.be>               +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/06 09:46:53 by zerrino           #+#    #+#              #
-#    Updated: 2026/08/03 01:35:20 by alexafer         ###   ########.fr        #
+#    Updated: 2026/08/06 16:41:31 by reborn           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = woody_woodpacker
+CHILD = woody
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
@@ -23,7 +24,7 @@ INC_DIR = include
 LIBFT_DIR   := libft
 LIBFT       := $(LIBFT_DIR)/libft.a
 
-SRC_FILES = main.c map_file.c read_elf.c extract_header.c extract_ph.c
+SRC_FILES = main.c map_file.c read_elf.c extract_header.c extract_ph.c setup_load.c create_woody.c
 SRCS = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
@@ -45,6 +46,7 @@ clean:
 
 fclean: clean
 	rm -f $(NAME)
+	rm -f $(CHILD)
 	$(MAKE) -C $(LIBFT_DIR) fclean
 
 re: fclean all

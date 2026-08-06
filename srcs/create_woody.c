@@ -1,35 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   create_woody.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: reborn <reborn@42belgium.be>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/01/08 09:06:22 by alexafer          #+#    #+#             */
-/*   Updated: 2026/08/06 16:03:15 by reborn           ###   ########.fr       */
+/*   Created: 2026/08/06 16:02:09 by reborn            #+#    #+#             */
+/*   Updated: 2026/08/06 16:10:29 by reborn           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "woody_woodpacker.h"
 
-int	main(int argc, char **argv)
+int create_woody(t_woody *wood)
 {
-	t_woody	wood;
+    int fd;
 
-	if (argc != 2)
-		goto error;
-	ft_bzero(&wood, sizeof(t_woody));
-	if (map_file(&wood, argv[1]) == 0)
-		goto error;
-	printf("file len : %d\n", wood.file_len);
-	if (extract_header(&wood) == 0)
-		goto error;
-	if (extract_ph(&wood) == 0)
-		goto error;
-	if (create_woody(&wood) == 0)
-		goto error;
-	return (0);
-error:
-	ft_putendl_fd("error", 2);
-	return (1);
+    fd = open("./woody", O_CREAT | O_WRONLY, 0755);
+    if (fd < 0)
+        return (0);
+    write(fd, wood->file, wood->file_len);
+    return (1);
 }
