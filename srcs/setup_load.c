@@ -6,7 +6,7 @@
 /*   By: reborn <reborn@42belgium.be>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/06 15:56:29 by reborn            #+#    #+#             */
-/*   Updated: 2026/08/06 16:32:09 by reborn           ###   ########.fr       */
+/*   Updated: 2026/08/06 17:25:03 by reborn           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,10 @@ static void    setup_load64(t_woody *wood, Elf64_Phdr *pt_note)
     pt_note->p_offset = wood->file_len;
     pt_note->p_paddr = wood->file_len;
     pt_note->p_vaddr = rounding_up(wood->biggest_mem_used) + (wood->file_len & 0xfff);
+    pt_note->p_memsz = wood->stub_size;
+    pt_note->p_filesz = wood->stub_size;
+    wood->mem_start = pt_note->p_vaddr;
+
 }
 
 void    setup_load(t_woody *wood, void *pt_note)

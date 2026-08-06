@@ -6,7 +6,7 @@
 /*   By: reborn <reborn@42belgium.be>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 09:06:34 by alexafer          #+#    #+#             */
-/*   Updated: 2026/08/06 16:23:12 by reborn           ###   ########.fr       */
+/*   Updated: 2026/08/06 17:38:28 by reborn           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,10 +40,15 @@ typedef struct s_woody
 		Elf64_Ehdr	elf64;
 	} *header;
 
+	uint64_t	original_entry;
+	uint8_t		*stub;
+	uint64_t	stub_size;
 	uint64_t	biggest_mem_used;
+	uint64_t	mem_start;
 	t_list		*elf_ph;
 }	t_woody;
 
+int			set_stub(t_woody *wood);
 int			extract_ph(t_woody *wood);
 int			create_woody(t_woody *wood);
 int			extract_header(t_woody *woody);

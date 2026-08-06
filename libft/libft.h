@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexafer <alexafer@student.42belgium.be    +#+  +:+       +#+        */
+/*   By: reborn <reborn@42belgium.be>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/23 16:07:40 by alexafer          #+#    #+#             */
-/*   Updated: 2026/01/10 10:13:57 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/08/06 17:49:25 by reborn           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ int				ft_tolower(int c);
 int				ft_strncmp(const char *s1, const char *s2, size_t n);
 int				ft_strcmp(const char *s1, const char *s2);
 char			*ft_strnstr(const char *haystack, const char *needle, size_t l);
+char			*ft_memnmem(const char *haystack, const char *needle, size_t needle_len, size_t len);
 char			*ft_strdup(char *src);
 
 #endif

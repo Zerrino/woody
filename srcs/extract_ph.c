@@ -6,7 +6,7 @@
 /*   By: reborn <reborn@42belgium.be>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 22:46:09 by alexafer          #+#    #+#             */
-/*   Updated: 2026/08/06 16:24:02 by reborn           ###   ########.fr       */
+/*   Updated: 2026/08/06 17:26:23 by reborn           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,6 @@ int	extract_ph(t_woody *wood)
 
 	if (elf_seek(wood, ph_offset) == -1)
 		return (0);
-
-	printf("ph number : %d, ph_offset : %d, ph_size : %d\n", ph_number, ph_offset, ph_size);
 	i = 0;
 	while (i < ph_number)
 	{
@@ -81,8 +79,6 @@ int	extract_ph(t_woody *wood)
 		ft_lstadd_back(&wood->elf_ph, new_ph);
 		i++;
 	}
-	printf("biggest : 0x%lx\n", wood->biggest_mem_used);
 	setup_load(wood, wood->pt_note);
-
 	return (1);
 }
