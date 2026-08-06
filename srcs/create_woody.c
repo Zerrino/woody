@@ -16,6 +16,8 @@
 int create_woody(t_woody *wood)
 {
     int         fd;
+    void        *to_change;
+    uint64_t     new_addr;
     uint64_t    original_entry;
 
     fd = open("./woody", O_CREAT | O_WRONLY, 0755);
@@ -24,11 +26,9 @@ int create_woody(t_woody *wood)
 
     original_entry = wood->header->elf64.e_entry;
     wood->header->elf64.e_entry = wood->mem_start;
-    printf("original entry : 0x%lx\n", original_entry);
-    printf("new      entry : 0x%lx\n", wood->header->elf64.e_entry);
-
-    char	*ft_memnmem(const char *haystack, const char *needle, size_t needle_len, size_t len);
-    printf("gap : %lx\n", original_entry - wood->header->elf64.e_entry);
+    to_change = ft_memnmem((void *)wood->stub, "\x42\x42\x42\x42\x42\x42\x42\x42", 8, wood->stub_size);
+    new_addr = wood->header->elf64.e_entry - original_entry;
+    ft_memcpy(to_change, &new_addr, sizeof(new_addr));
     write(fd, wood->file, wood->file_len);
     write(fd, wood->stub, wood->stub_size);
     return (1);
