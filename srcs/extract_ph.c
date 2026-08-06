@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   extract_ph.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: reborn <reborn@42belgium.be>               +#+  +:+       +#+        */
+/*   By: alexafer <alexafer@student.42belgium.be    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 22:46:09 by alexafer          #+#    #+#             */
-/*   Updated: 2026/08/06 17:26:23 by reborn           ###   ########.fr       */
+/*   Updated: 2026/08/06 23:56:45 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,30 +54,36 @@ int	extract_ph(t_woody *wood)
 	int			ph_number;
 	int			ph_size;
 	void		*ph;
-	t_list		*new_ph;
 
 	ph_offset = get_ph_offset(wood);
 	ph_number = get_ph_number(wood);
 	ph_size = get_ph_size(wood);
 
 	if (elf_seek(wood, ph_offset) == -1)
+	{
+		wood->error = "invalid elf file.";
 		return (0);
+	}
 	i = 0;
 	while (i < ph_number)
 	{
 		ph = read_elf(wood, ph_size);
 		if (!ph)
+		{
+			wood->error = "failed to read the program header.";
 			return (0);
-		new_ph = ft_lstnew(ph);
-		if (!new_ph)
-			return (0);
+		}
 		if (wood->pt_note == 0 && ((wood->format == ELF32 && ((Elf32_Phdr *)ph)->p_type == PT_NOTE) ||
 				(wood->pt_note == 0 && wood->format == ELF64 && ((Elf64_Phdr *)ph)->p_type == PT_NOTE)))
 			wood->pt_note = ph;
 		if (wood->biggest_mem_used < get_biggest_mem(wood, ph))
 			wood->biggest_mem_used = get_biggest_mem(wood, ph);
-		ft_lstadd_back(&wood->elf_ph, new_ph);
 		i++;
+	}
+	if (wood->pt_note == 0)
+	{
+		wood->error = "failed to pack.";
+		return (0);
 	}
 	setup_load(wood, wood->pt_note);
 	return (1);

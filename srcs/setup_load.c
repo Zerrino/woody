@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42belgium.be    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/06 15:56:29 by reborn            #+#    #+#             */
-/*   Updated: 2026/08/06 20:38:41 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/08/06 21:27:05 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,6 @@ static uint64_t rounding_up(uint64_t mem)
 
 static void    setup_load32(t_woody *wood, Elf32_Phdr *pt_note)
 {
-    (void)wood;
-    (void)pt_note;
-}
-
-static void    setup_load64(t_woody *wood, Elf64_Phdr *pt_note)
-{
-    (void)wood;
     pt_note->p_type = 1;
     pt_note->p_flags = PF_X | PF_R;
     pt_note->p_offset = wood->file_len;
@@ -33,8 +26,21 @@ static void    setup_load64(t_woody *wood, Elf64_Phdr *pt_note)
     pt_note->p_vaddr = rounding_up(wood->biggest_mem_used) + (wood->file_len & 0xfff);
     pt_note->p_memsz = wood->stub_size;
     pt_note->p_filesz = wood->stub_size;
+    pt_note->p_align = 0x1000;
     wood->mem_start = pt_note->p_vaddr;
+}
 
+static void    setup_load64(t_woody *wood, Elf64_Phdr *pt_note)
+{
+    pt_note->p_type = 1;
+    pt_note->p_flags = PF_X | PF_R;
+    pt_note->p_offset = wood->file_len;
+    pt_note->p_paddr = wood->file_len;
+    pt_note->p_vaddr = rounding_up(wood->biggest_mem_used) + (wood->file_len & 0xfff);
+    pt_note->p_memsz = wood->stub_size;
+    pt_note->p_filesz = wood->stub_size;
+    pt_note->p_align = 0x1000;
+    wood->mem_start = pt_note->p_vaddr;
 }
 
 void    setup_load(t_woody *wood, void *pt_note)

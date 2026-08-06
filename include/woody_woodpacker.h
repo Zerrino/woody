@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   woody_woodpacker.h                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: reborn <reborn@42belgium.be>               +#+  +:+       +#+        */
+/*   By: alexafer <alexafer@student.42belgium.be    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 09:06:34 by alexafer          #+#    #+#             */
-/*   Updated: 2026/08/06 17:38:28 by reborn           ###   ########.fr       */
+/*   Updated: 2026/08/06 23:47:33 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ typedef struct s_woody
 	uint64_t	stub_size;
 	uint64_t	biggest_mem_used;
 	uint64_t	mem_start;
-	t_list		*elf_ph;
+	char		*error;
 }	t_woody;
 
 int			set_stub(t_woody *wood);
