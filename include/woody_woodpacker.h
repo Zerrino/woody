@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   woody_woodpacker.h                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexafer <alexafer@student.42belgium.be    +#+  +:+       +#+        */
+/*   By: reborn <reborn@42belgium.be>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 09:06:34 by alexafer          #+#    #+#             */
-/*   Updated: 2026/08/06 23:47:33 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/08/07 14:52:22 by reborn           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,9 @@ typedef struct s_woody
 	char		*error;
 }	t_woody;
 
+#define ROUNDS 27
+#define BLOCK_SIZE 16
+
 int			set_stub(t_woody *wood);
 int			extract_ph(t_woody *wood);
 int			create_woody(t_woody *wood);
@@ -56,8 +59,11 @@ int			map_file(t_woody *wood, char *path);
 int			elf_seek(t_woody *wood, int seek_pos);
 
 uint64_t	get_program_entry(t_woody *woody);
+uint64_t	get_writing_point(t_woody *wood);
 
 void		*read_elf(t_woody *wood, int size);
 void		setup_load(t_woody *wood, void *pt_note);
+void		speack_encrypt(char *mem, size_t len);
+void		speack_decrypt(char *mem, size_t len);
 
 #endif

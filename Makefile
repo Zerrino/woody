@@ -6,7 +6,7 @@
 #    By: reborn <reborn@42belgium.be>               +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/12/06 09:46:53 by zerrino           #+#    #+#              #
-#    Updated: 2026/08/06 17:22:36 by reborn           ###   ########.fr        #
+#    Updated: 2026/08/07 14:26:23 by reborn           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ INC_DIR = include
 LIBFT_DIR   := libft
 LIBFT       := $(LIBFT_DIR)/libft.a
 
-SRC_FILES = main.c map_file.c read_elf.c extract_header.c extract_ph.c setup_load.c create_woody.c set_stub.c
+SRC_FILES = main.c map_file.c read_elf.c extract_header.c extract_ph.c setup_load.c create_woody.c set_stub.c encrypt.c
 SRCS = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   setup_load.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: alexafer <alexafer@student.42belgium.be    +#+  +:+       +#+        */
+/*   By: reborn <reborn@42belgium.be>               +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/06 15:56:29 by reborn            #+#    #+#             */
-/*   Updated: 2026/08/06 21:27:05 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/08/07 17:23:39 by reborn           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,10 +20,10 @@ static uint64_t rounding_up(uint64_t mem)
 static void    setup_load32(t_woody *wood, Elf32_Phdr *pt_note)
 {
     pt_note->p_type = 1;
-    pt_note->p_flags = PF_X | PF_R;
-    pt_note->p_offset = wood->file_len;
-    pt_note->p_paddr = wood->file_len;
-    pt_note->p_vaddr = rounding_up(wood->biggest_mem_used) + (wood->file_len & 0xfff);
+    pt_note->p_flags = PF_X | PF_R | PF_W;
+    pt_note->p_offset = get_writing_point(wood);
+    pt_note->p_paddr = get_writing_point(wood);
+    pt_note->p_vaddr = rounding_up(wood->biggest_mem_used) + (get_writing_point(wood) & 0xfff);
     pt_note->p_memsz = wood->stub_size;
     pt_note->p_filesz = wood->stub_size;
     pt_note->p_align = 0x1000;
@@ -33,10 +33,10 @@ static void    setup_load32(t_woody *wood, Elf32_Phdr *pt_note)
 static void    setup_load64(t_woody *wood, Elf64_Phdr *pt_note)
 {
     pt_note->p_type = 1;
-    pt_note->p_flags = PF_X | PF_R;
-    pt_note->p_offset = wood->file_len;
-    pt_note->p_paddr = wood->file_len;
-    pt_note->p_vaddr = rounding_up(wood->biggest_mem_used) + (wood->file_len & 0xfff);
+    pt_note->p_flags = PF_X | PF_R | PF_W;
+    pt_note->p_offset = get_writing_point(wood);
+    pt_note->p_paddr = get_writing_point(wood);
+    pt_note->p_vaddr = rounding_up(wood->biggest_mem_used) + (get_writing_point(wood) & 0xfff);
     pt_note->p_memsz = wood->stub_size;
     pt_note->p_filesz = wood->stub_size;
     pt_note->p_align = 0x1000;

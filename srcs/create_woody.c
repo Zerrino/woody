@@ -12,7 +12,16 @@
 
 #include "woody_woodpacker.h"
 
-static int create32(t_woody *wood)
+uint64_t  get_writing_point(t_woody *wood)
+{
+    if (wood->format == ELF32 && wood->file_len > (int)wood->header->elf32.e_shoff)
+        return wood->header->elf32.e_shoff;
+    else if (wood->format == ELF64 && wood->file_len > (int)wood->header->elf64.e_shoff)
+        return wood->header->elf64.e_shoff;
+    return wood->file_len;
+}
+
+static int  create32(t_woody *wood)
 {
     void        *to_change;
     uint32_t    original_entry;
@@ -31,9 +40,10 @@ static int create32(t_woody *wood)
     return (1);
 }
 
-static int create64(t_woody *wood)
+static int  create64(t_woody *wood)
 {
     void        *to_change;
+    void        *to_encrypt;
     uint64_t    original_entry;
     uint64_t    new_addr;
 
@@ -45,8 +55,17 @@ static int create64(t_woody *wood)
         wood->error = "invalid stub provided.";
         return (0);
     }
+
     new_addr = wood->header->elf64.e_entry - original_entry;
     ft_memcpy(to_change, &new_addr, sizeof(new_addr));
+
+
+    to_encrypt = ft_memnmem((void *)wood->stub, "....WOODY........WOODY........WOODY....\n", 40, wood->stub_size);
+    if (to_encrypt)
+    {
+        speack_encrypt(to_encrypt, 32);
+    }
+
     return (1);
 }
 
@@ -63,7 +82,7 @@ int create_woody(t_woody *wood)
         return (0);
     else if (wood->format == ELF64 && create64(wood) == 0)
         return (0);
-    write(fd, wood->file, wood->file_len);
+    write(fd, wood->file, get_writing_point(wood));
     write(fd, wood->stub, wood->stub_size);
     return (1);
 }
