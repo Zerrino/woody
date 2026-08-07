@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   woody_woodpacker.h                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: reborn <reborn@42belgium.be>               +#+  +:+       +#+        */
+/*   By: alexafer <alexafer@student.42belgium.be    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 09:06:34 by alexafer          #+#    #+#             */
-/*   Updated: 2026/08/07 14:52:22 by reborn           ###   ########.fr       */
+/*   Updated: 2026/08/07 22:56:36 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ typedef enum e_bit
 typedef struct s_woody
 {
 	uint8_t	*file;
-	int		file_len;
-	int		file_pos;
+	uint64_t		file_len;
+	uint64_t		file_pos;
 	int		format;
 	void	*pt_note;
 	union
@@ -45,6 +45,7 @@ typedef struct s_woody
 	uint64_t	stub_size;
 	uint64_t	biggest_mem_used;
 	uint64_t	mem_start;
+	uint64_t	e_shoff;
 	char		*error;
 }	t_woody;
 
@@ -56,7 +57,7 @@ int			extract_ph(t_woody *wood);
 int			create_woody(t_woody *wood);
 int			extract_header(t_woody *woody);
 int			map_file(t_woody *wood, char *path);
-int			elf_seek(t_woody *wood, int seek_pos);
+int			elf_seek(t_woody *wood, uint64_t seek_pos);
 
 uint64_t	get_program_entry(t_woody *woody);
 uint64_t	get_writing_point(t_woody *wood);

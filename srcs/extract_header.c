@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42belgium.be    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 20:33:04 by alexafer          #+#    #+#             */
-/*   Updated: 2026/08/06 23:54:33 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/08/07 22:55:24 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,5 +22,9 @@ int	extract_header(t_woody *woody)
 		return (0);
 	}
 	woody->format = ((char *)woody->header)[EI_CLASS];
+	if (woody->format == ELF32)
+		woody->e_shoff = woody->header->elf32.e_shoff;
+	else
+		woody->e_shoff = woody->header->elf64.e_shoff;
 	return (1);
 }
