@@ -60,10 +60,10 @@ static int  create64(t_woody *wood)
     ft_memcpy(to_change, &new_addr, sizeof(new_addr));
 
 
-    to_encrypt = ft_memnmem((void *)wood->stub, "....WOODY........WOODY........WOODY....\n", 40, wood->stub_size);
+    to_encrypt = ft_memnmem((void *)wood->stub, "....WOODY....\n", 14, wood->stub_size);
     if (to_encrypt)
     {
-        speack_encrypt(to_encrypt, 32);
+        speack_encrypt(to_encrypt, 16);
     }
 
     return (1);

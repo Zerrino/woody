@@ -8,7 +8,7 @@ default rel
 entry:
 
     jmp after_woody
-    woody: db '....WOODY........WOODY........WOODY....',  0xA
+    woody: db '....WOODY....',  0xA, 0, 0
     woody_len equ $ - woody
 after_woody:
 
