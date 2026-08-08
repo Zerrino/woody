@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42belgium.be    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 09:06:34 by alexafer          #+#    #+#             */
-/*   Updated: 2026/08/07 23:18:01 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/08/08 16:28:15 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ typedef enum e_bit
 
 typedef struct s_pt_encrypted
 {
-	uint64_t	offset;
+	uint64_t	file_offset;
+	uint64_t	memo_offset;
 	uint64_t	size;
 }	t_pt_encrypted;
 

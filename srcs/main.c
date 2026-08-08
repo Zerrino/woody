@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: reborn <reborn@42belgium.be>               +#+  +:+       +#+        */
+/*   By: alexafer <alexafer@student.42belgium.be    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 09:06:22 by alexafer          #+#    #+#             */
-/*   Updated: 2026/08/07 14:47:54 by reborn           ###   ########.fr       */
+/*   Updated: 2026/08/08 16:35:36 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,11 @@ int	main(int argc, char **argv)
 	if (create_woody(&wood) == 0)
 		goto error;
 	free(wood.stub);
+	ft_lstclear(&wood.pt_encrypted, free);
 	return (0);
 error:
 	free(wood.stub);
+	ft_lstclear(&wood.pt_encrypted, free);
 	ft_putstr_fd("error: ", 2);
 	ft_putendl_fd(wood.error, 2);
 	return (1);

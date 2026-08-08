@@ -96,16 +96,12 @@ int create_woody(t_woody *wood)
     write(fd, wood->stub, wood->stub_size);
     lst = wood->pt_encrypted;
     lst_len = ft_lstsize(lst);
-    printf("lst_len : %lx\n", lst_len);
     write(fd, &lst_len, 8);
 
     while (lst)
     {
         pt = lst->content;
-        printf("here : 0x%lX, 0x%lX, 0x%lX\n", pt->offset, pt->size, wood->header->elf64.e_entry);
-
-
-        offset = wood->header->elf64.e_entry - pt->offset;
+        offset = wood->header->elf64.e_entry - pt->memo_offset;
         write(fd, &offset, 8);
         write(fd, &pt->size, 8);
         lst = lst->next;

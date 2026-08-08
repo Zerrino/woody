@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42belgium.be    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/06 15:56:29 by reborn            #+#    #+#             */
-/*   Updated: 2026/08/08 12:32:02 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/08/08 16:33:54 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ static void    setup_load32(t_woody *wood, Elf32_Phdr *pt_note)
 
 static void    setup_load64(t_woody *wood, Elf64_Phdr *pt_note)
 {
-    printf("here! %d\n", ft_lstsize(wood->pt_encrypted));
     pt_note->p_type = 1;
     pt_note->p_flags = PF_X | PF_R | PF_W;
     pt_note->p_offset = get_writing_point(wood);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   encrypt.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: reborn <reborn@42belgium.be>               +#+  +:+       +#+        */
+/*   By: alexafer <alexafer@student.42belgium.be    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/07 14:23:56 by reborn            #+#    #+#             */
-/*   Updated: 2026/08/07 17:38:13 by reborn           ###   ########.fr       */
+/*   Updated: 2026/08/08 15:53:24 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static uint64_t    ror(uint64_t x, int r)
 
 static void    speck_key_schedule()
 {
-    static int      flag;
+    static int      flag = 0;
     round_keys[0] = key[0];
     uint64_t b = key[1];
 
