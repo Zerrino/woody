@@ -11,11 +11,13 @@ entry:
     woody: db '....WOODY....',  0xA, 0, 0
     woody_len equ $ - woody
 after_woody:
-
     push    rdi
     push    rsi
     push    rdx
+    push    rcx
+    push    rbx
 
+    call    speck_key_schedule
 
     lea     rdi, [rel woody]
     mov     rsi, woody_len
@@ -27,14 +29,59 @@ after_woody:
     mov     rdx, woody_len
     syscall
 
-    lea     rax, [rel entry]
-    mov     rdi, 0x4242424242424242
-    sub     rax, rdi
+    lea     rax, [rel addresse]
+    mov     rcx, [rax]
+    test    rcx, rcx
+    jz      .end_blabla
+
+.blabla:
+
+    push    rcx
+    push    rax
+    push    rdi
+    push    rsi
+    push    rdx
+
+    mov     rax, 1
+    mov     rdi, 1
+    lea     rsi, [rel woody]
+    mov     rdx, woody_len
+    syscall
 
     pop     rdx
     pop     rsi
     pop     rdi
+    pop     rax
+    pop     rcx
 
+    ;add     rax, 8
+    ;lea     rdi, [rel entry]
+    ;mov     rdx, [rax]
+    ;sub     rdi, rdx
+    ;add     rax, 8
+    ;mov     rsi, [rax]
+
+    ;push    rax
+    ;push    rcx
+
+    ;call    speak_decrypt
+
+    ;pop     rcx
+    ;pop     rax
+
+    dec     rcx
+    jnz     .blabla
+.end_blabla:
+
+    lea     rax, [rel entry]
+    mov     rdi, 0x4242424242424242
+    sub     rax, rdi
+
+    pop     rbx
+    pop     rcx
+    pop     rdx
+    pop     rsi
+    pop     rdi
     jmp     rax
 
 
@@ -87,12 +134,6 @@ speck_decrypt_128:
 
 speak_decrypt: ; speack_decrypt(char *mem, size_t len) rdi rsi
 
-    push    rdi
-    push    rsi
-    call    speck_key_schedule
-    pop     rsi
-    pop     rdi
-
     cmp     rsi, BLOCK_SIZE
     jb      .end
     xor     rcx, rcx
@@ -110,7 +151,7 @@ speak_decrypt: ; speack_decrypt(char *mem, size_t len) rdi rsi
     pop     rcx
     pop     rsi
     pop     rdi
-    
+
     add      rcx, BLOCK_SIZE
     cmp      rcx, rsi
     jb      .loop
@@ -121,3 +162,5 @@ speak_decrypt: ; speack_decrypt(char *mem, size_t len) rdi rsi
     key:    dq  0x1918111009080100, 0x1110980801000908
     round_keys: times ROUNDS dq 0
     flag:   db 0
+    hello: db 'hello'
+    addresse: dq 1

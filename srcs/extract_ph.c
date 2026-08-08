@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   extract_ph.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: reborn <reborn@42belgium.be>               +#+  +:+       +#+        */
+/*   By: alexafer <alexafer@student.42belgium.be    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 22:46:09 by alexafer          #+#    #+#             */
-/*   Updated: 2026/08/07 14:44:30 by reborn           ###   ########.fr       */
+/*   Updated: 2026/08/08 01:39:32 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,41 @@ uint64_t	get_program_entry(t_woody *woody)
 	return (woody->header->elf64.e_entry);
 }
 
+static int	encrypt_pt_load64(t_woody *wood, void *ph)
+{
+	t_list			*new_lst;
+	t_pt_encrypted	*new_pt;
+
+	new_pt = (t_pt_encrypted *)malloc(sizeof(t_pt_encrypted));
+	if (!new_pt)
+	{
+		error:
+		wood->error = "failed to malloc.";
+		return (0);
+	}
+	new_pt->size = ((Elf64_Phdr *)ph)->p_filesz & ~0xf;
+	new_pt->size /= 4;
+	new_pt->size &= ~0xf;
+	new_pt->offset = ((Elf64_Phdr *)ph)->p_offset + ((Elf64_Phdr *)ph)->p_filesz - new_pt->size;
+	new_lst = ft_lstnew(new_pt);
+	if (!new_lst)
+	{
+		free(new_pt);
+		goto error;
+	}
+	ft_lstadd_back(&wood->pt_encrypted, new_lst);
+	printf("offset : 0x%lX, size : 0x%lX\n", new_pt->offset, new_pt->size);
+	speack_encrypt((char *)&wood->file[new_pt->offset], new_pt->size);
+	return (1);
+}
+
 int	extract_ph(t_woody *wood)
 {
-	int			i;
-	int			ph_offset;
-	int			ph_number;
-	int			ph_size;
-	void		*ph;
+	int				i;
+	int				ph_offset;
+	int				ph_number;
+	int				ph_size;
+	void			*ph;
 
 	ph_offset = get_ph_offset(wood);
 	ph_number = get_ph_number(wood);
@@ -78,6 +106,17 @@ int	extract_ph(t_woody *wood)
 			wood->pt_note = ph;
 		if (wood->biggest_mem_used < get_biggest_mem(wood, ph))
 			wood->biggest_mem_used = get_biggest_mem(wood, ph);
+		if (wood->format == ELF32 && ((Elf32_Phdr *)ph)->p_type == PT_LOAD
+				&& ((Elf32_Phdr *)ph)->p_flags & PF_X)
+		{
+		}
+		else if (wood->format == ELF64 && ((Elf64_Phdr *)ph)->p_type == PT_LOAD
+				&& ((Elf64_Phdr *)ph)->p_flags & PF_X)
+		{
+			if (encrypt_pt_load64(wood, ph) == 0)
+				return (0);
+			((Elf64_Phdr *)ph)->p_flags |= PF_W;
+		}
 		i++;
 	}
 	if (wood->pt_note == 0)

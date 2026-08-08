@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42belgium.be    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/08 09:06:34 by alexafer          #+#    #+#             */
-/*   Updated: 2026/08/07 22:56:36 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/08/07 23:18:01 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,12 @@ typedef enum e_bit
 	ELF32 = 1,
 	ELF64 = 2
 }	t_bit;
+
+typedef struct s_pt_encrypted
+{
+	uint64_t	offset;
+	uint64_t	size;
+}	t_pt_encrypted;
 
 typedef struct s_woody
 {
@@ -47,6 +53,7 @@ typedef struct s_woody
 	uint64_t	mem_start;
 	uint64_t	e_shoff;
 	char		*error;
+	t_list		*pt_encrypted;
 }	t_woody;
 
 #define ROUNDS 27

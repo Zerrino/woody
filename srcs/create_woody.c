@@ -76,7 +76,12 @@ static int  create64(t_woody *wood)
 
 int create_woody(t_woody *wood)
 {
-    int         fd;
+    t_list          *lst;
+    t_pt_encrypted  *pt;
+    uint64_t        lst_len;
+    //uint64_t        offset;
+    int             fd;
+
     fd = open("./woody", O_CREAT | O_WRONLY, 0755);
     if (fd < 0)
     {
@@ -89,6 +94,22 @@ int create_woody(t_woody *wood)
         return (0);
     write(fd, wood->file, get_writing_point(wood));
     write(fd, wood->stub, wood->stub_size);
+    lst = wood->pt_encrypted;
+    lst_len = ft_lstsize(lst);
+    printf("lst_len : %lx\n", lst_len);
+    //write(fd, &lst_len, 8);
 
+    while (lst)
+    {
+        pt = lst->content;
+        printf("here : 0x%lX, 0x%lX, 0x%lX\n", pt->offset, pt->size, wood->header->elf64.e_entry);
+
+
+        //offset = wood->header->elf64.e_entry - pt->offset;
+        //write(fd, &offset, 8);
+        //write(fd, &pt->size, 8);
+        lst = lst->next;
+    }
+    close(fd);
     return (1);
 }
