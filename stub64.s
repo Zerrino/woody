@@ -36,38 +36,20 @@ after_woody:
 
 .blabla:
 
-    push    rcx
+    add     rax, 8
+    lea     rdi, [rel entry]
+    mov     rdx, [rax]
+    sub     rdi, rdx
+    add     rax, 8
+    mov     rsi, [rax]
+
     push    rax
-    push    rdi
-    push    rsi
-    push    rdx
+    push    rcx
 
-    mov     rax, 1
-    mov     rdi, 1
-    lea     rsi, [rel woody]
-    mov     rdx, woody_len
-    syscall
+    call    speak_decrypt
 
-    pop     rdx
-    pop     rsi
-    pop     rdi
-    pop     rax
     pop     rcx
-
-    ;add     rax, 8
-    ;lea     rdi, [rel entry]
-    ;mov     rdx, [rax]
-    ;sub     rdi, rdx
-    ;add     rax, 8
-    ;mov     rsi, [rax]
-
-    ;push    rax
-    ;push    rcx
-
-    ;call    speak_decrypt
-
-    ;pop     rcx
-    ;pop     rax
+    pop     rax
 
     dec     rcx
     jnz     .blabla
@@ -163,4 +145,4 @@ speak_decrypt: ; speack_decrypt(char *mem, size_t len) rdi rsi
     round_keys: times ROUNDS dq 0
     flag:   db 0
     hello: db 'hello'
-    addresse: dq 1
+    addresse:

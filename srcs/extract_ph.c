@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42belgium.be    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 22:46:09 by alexafer          #+#    #+#             */
-/*   Updated: 2026/08/08 01:39:32 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/08/08 12:34:25 by alexafer         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,9 +60,7 @@ static int	encrypt_pt_load64(t_woody *wood, void *ph)
 		return (0);
 	}
 	new_pt->size = ((Elf64_Phdr *)ph)->p_filesz & ~0xf;
-	new_pt->size /= 4;
-	new_pt->size &= ~0xf;
-	new_pt->offset = ((Elf64_Phdr *)ph)->p_offset + ((Elf64_Phdr *)ph)->p_filesz - new_pt->size;
+	new_pt->offset = ((Elf64_Phdr *)ph)->p_offset;
 	new_lst = ft_lstnew(new_pt);
 	if (!new_lst)
 	{
