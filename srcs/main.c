@@ -22,16 +22,27 @@ int	main(int argc, char **argv)
 		wood.error = "you need to specify an program to infect.";
 		goto error;
 	}
+
+	// Map the original ELF file into memory
 	if (map_file(&wood, argv[1]) == 0)
 		goto error;
+	
+	// Parse and extract ELF header (32 or 64 bit based on magic number)
 	if (extract_header(&wood) == 0)
 		goto error;
+	
+	// Set up the stub (decompression/decryption code that runs at runtime)
 	if (set_stub(&wood) == 0)
 		goto error;
+	
+	// Extract program headers (segments info) from ELF
 	if (extract_ph(&wood) == 0)
 		goto error;
+	
+	// Create the packed Woody binary (core packing logic + encryption)
 	if (create_woody(&wood) == 0)
 		goto error;
+
 	free(wood.stub);
 	ft_lstclear(&wood.pt_encrypted, free);
 	return (0);

@@ -21,12 +21,14 @@
 
 # include "../libft/libft.h"
 
+// Represents ELF bitness: ELF32 (32-bit) or ELF64 (64-bit)
 typedef enum e_bit
 {
 	ELF32 = 1,
 	ELF64 = 2
 }	t_bit;
 
+// Tracks an encrypted segment's mapping between file and memory offsets
 typedef struct s_pt_encrypted
 {
 	uint64_t	file_offset;
@@ -34,6 +36,7 @@ typedef struct s_pt_encrypted
 	uint64_t	size;
 }	t_pt_encrypted;
 
+// Main packer context structure - holds all state during packing operation
 typedef struct s_woody
 {
 	uint8_t	*file;
@@ -41,6 +44,8 @@ typedef struct s_woody
 	uint64_t		file_pos;
 	int		format;
 	void	*pt_note;
+
+	// Union to handle both ELF versions - same pointer can cast to either
 	union
 	{
 		Elf32_Ehdr	elf32;
