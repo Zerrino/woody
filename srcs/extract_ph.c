@@ -6,7 +6,7 @@
 /*   By: alexafer <alexafer@student.42belgium.be    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/08/02 22:46:09 by alexafer          #+#    #+#             */
-/*   Updated: 2026/08/08 16:33:50 by alexafer         ###   ########.fr       */
+/*   Updated: 2026/08/10 17:32:02 by reborn           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,7 +99,8 @@ static int	encrypt_pt_load64(t_woody *wood, void *ph)
 // ============================================
 // MAIN: EXTRACT PROGRAM HEADERS
 // Parses all segments, identifies executable ones, encrypts them
-// ============================================nt	extract_ph(t_woody *wood)
+// ============================================
+int	extract_ph(t_woody *wood)
 {
 	int				i;
 	int				ph_offset;
