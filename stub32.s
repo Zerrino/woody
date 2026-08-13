@@ -6,29 +6,18 @@
 ; NOTE: 0x42424242 is a PLACEHOLDER - must be patched by create_woody()
 ; ============================================
 
-bits 32						; Assemble for 32-bit (x86)
-default rel					; Use RIP-relative addressing (for position independence)
+bits 32
+default rel
 
-; --------------------------------------------
-; Entry Point
-; --------------------------------------------
 entry:
 
-; --------------------------------------------
-; SAVE REGISTERS
-; Preserve callee-saved registers for later restoration
-; --------------------------------------------
 push_s:
     push ebx
     push ecx
     push edx
 push_len equ $ - push_s		; Calculate how many bytes were pushed (12 bytes = 3 regs × 4)
 
-; --------------------------------------------
 ; CALCULATE BASE ADDRESS
-; Use x87 FPU trick to get current EIP value
-; fnstenv stores the instruction pointer in its stack frame
-; --------------------------------------------
 after_push_s:
     fldz
     fnstenv [esp-0x0C]
@@ -43,20 +32,18 @@ until_woody equ $ - after_push_s	; Distance from start to jmp instruction (used 
 
 after_woody:
 
-    pop ecx							; Recover saved ECX (also gets address after pushes)
-    push ecx						; Push it again (preserve on stack)
+    pop ecx
+    push ecx
     add ecx, until_woody			; Calculate position of "WOODY" string by adding offset
-									; Now ECX points to 'W' in "...WOODY..."
 
-    mov eax, 4						; syscall number 4 = sys_write
-    mov ebx, 1						; fd = 1 (stdout)
+    mov eax, 4						; sys_write
+    mov ebx, 1						; stdout
     mov edx, woody_len
-    int 0x80						; Invoke kernel syscall (32-bit interrupt)
+    int 0x80
 
-    pop eax							; Pop the address after syscall setup
+    pop eax
     sub eax, 0x42424242				; Remove placeholder - THIS MUST BE PATCHED BY PACKER!
-									; If not patched, jumps to garbage address (crash)
-    sub eax, push_len				; Adjust for the push instructions (account for register saves)
+    sub eax, push_len
 
     pop edx
     pop ecx
