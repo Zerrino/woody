@@ -18,7 +18,6 @@ int	map_file(t_woody *wood, char *path)
 	int			fd;
 	int			fs;
 
-	// Open file in read-only mode
 	fd = open(path, O_RDONLY);
 	if (fd < 0)
 	{
@@ -26,7 +25,6 @@ int	map_file(t_woody *wood, char *path)
 		goto error;
 	}
 
-	// Get file statistics (size, mode, etc.)
 	fs = fstat(fd, &buffer);
 	if (fs < 0)
 	{
@@ -34,7 +32,6 @@ int	map_file(t_woody *wood, char *path)
 		goto error;
 	}
 
-	// Reject directories - must be a regular file
 	if (S_ISDIR(buffer.st_mode))
 	{
 		wood->error = "you must provide a file.";
@@ -42,7 +39,6 @@ int	map_file(t_woody *wood, char *path)
 	}
 
 	// Map entire file into memory with read+write permissions
-	// MAP_PRIVATE: copy-on-write, changes don't affect original file
 	wood->file = mmap(NULL, buffer.st_size, PROT_READ | PROT_WRITE, MAP_PRIVATE, fd, 0);
 	if (!wood->file)
 	{
@@ -50,7 +46,6 @@ int	map_file(t_woody *wood, char *path)
 		goto error;
 	}
 
-	// Store file metadata in context
 	wood->file_len = buffer.st_size;
 	wood->file_pos = 0;
 	close(fd);
