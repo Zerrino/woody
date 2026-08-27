@@ -21,6 +21,9 @@
 
 # include "../libft/libft.h"
 
+#define ROUNDS 27
+#define BLOCK_SIZE 16
+
 // Represents ELF bitness: ELF32 (32-bit) or ELF64 (64-bit)
 typedef enum e_bit
 {
@@ -59,11 +62,10 @@ typedef struct s_woody
 	uint64_t	mem_start;
 	uint64_t	e_shoff;
 	char		*error;
+	uint64_t    key[2];
+    uint64_t    round_keys[ROUNDS];
 	t_list		*pt_encrypted;
 }	t_woody;
-
-#define ROUNDS 27
-#define BLOCK_SIZE 16
 
 int			set_stub(t_woody *wood);
 int			extract_ph(t_woody *wood);
@@ -71,13 +73,12 @@ int			create_woody(t_woody *wood);
 int			extract_header(t_woody *woody);
 int			map_file(t_woody *wood, char *path);
 int			elf_seek(t_woody *wood, uint64_t seek_pos);
-
+int			generate_key(t_woody *wood);
 uint64_t	get_program_entry(t_woody *woody);
 uint64_t	get_writing_point(t_woody *wood);
 
 void		*read_elf(t_woody *wood, int size);
 void		setup_load(t_woody *wood, void *pt_note);
-void		speack_encrypt(char *mem, size_t len);
-void		speack_decrypt(char *mem, size_t len);
+void		speack_encrypt(t_woody *wood, char *mem, size_t len);
 
 #endif

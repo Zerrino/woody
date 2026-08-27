@@ -14,36 +14,26 @@
 
 static int	get_ph_number(t_woody *woody)
 {
-	if (woody->format == ELF32)
-		return (woody->header->elf32.e_phnum);
 	return (woody->header->elf64.e_phnum);
 }
 
 static int	get_ph_size(t_woody *woody)
 {
-	if (woody->format == ELF32)
-		return (woody->header->elf32.e_phentsize);
 	return (woody->header->elf64.e_phentsize);
 }
 
 static int	get_ph_offset(t_woody *woody)
 {
-	if (woody->format == ELF32)
-		return (woody->header->elf32.e_phoff);
 	return (woody->header->elf64.e_phoff);
 }
 
-static uint64_t	get_biggest_mem(t_woody *woody, void *ph)
+static uint64_t	get_biggest_mem(void *ph)
 {
-	if (woody->format == ELF32)
-		return ((uint64_t)((Elf32_Phdr *)ph)->p_vaddr + ((Elf32_Phdr *)ph)->p_memsz);
 	return ((uint64_t)((Elf64_Phdr *)ph)->p_vaddr + ((Elf64_Phdr *)ph)->p_memsz);
 }
 
 uint64_t	get_program_entry(t_woody *woody)
 {
-	if (woody->format == ELF32)
-		return ((uint64_t)woody->header->elf32.e_entry);
 	return (woody->header->elf64.e_entry);
 }
 
@@ -75,7 +65,8 @@ static int	encrypt_pt_load64(t_woody *wood, void *ph)
 	ft_lstadd_back(&wood->pt_encrypted, new_lst);
 
 	// APPLY SPECK ENCRYPTION TO FILE DATA
-	speack_encrypt((char *)&wood->file[new_pt->file_offset], new_pt->size);
+	printf("here!\n");
+	speack_encrypt(wood, (char *)&wood->file[new_pt->file_offset], new_pt->size);
 	return (1);
 }
 
@@ -110,22 +101,14 @@ int	extract_ph(t_woody *wood)
 		}
 
 		// Look for PT_NOTE segment - stores metadata/signature
-		if (wood->pt_note == 0 && ((wood->format == ELF32 && ((Elf32_Phdr *)ph)->p_type == PT_NOTE) ||
-				(wood->pt_note == 0 && wood->format == ELF64 && ((Elf64_Phdr *)ph)->p_type == PT_NOTE)))
+		if (wood->pt_note == 0 && wood->format == ELF64 && ((Elf64_Phdr *)ph)->p_type == PT_NOTE)
 			wood->pt_note = ph;
 
-		if (wood->biggest_mem_used < get_biggest_mem(wood, ph))
-			wood->biggest_mem_used = get_biggest_mem(wood, ph);
+		if (wood->biggest_mem_used < get_biggest_mem(ph))
+			wood->biggest_mem_used = get_biggest_mem(ph);
 
-		// 32-bit: Check PT_LOAD + PF_X (execute flag)
-		// BUG: Empty if-block for 32-bit! Nothing happens!
-		if (wood->format == ELF32 && ((Elf32_Phdr *)ph)->p_type == PT_LOAD
-				&& ((Elf32_Phdr *)ph)->p_flags & PF_X)
-		{
-			// 🚨 EMPTY - no encryption for 32-bit executable segments!
-		}
 		// 64-bit: Check PT_LOAD + PF_X
-		else if (wood->format == ELF64 && ((Elf64_Phdr *)ph)->p_type == PT_LOAD
+		if (wood->format == ELF64 && ((Elf64_Phdr *)ph)->p_type == PT_LOAD
 				&& ((Elf64_Phdr *)ph)->p_flags & PF_X)
 		{
 			// Encrypt this segment!

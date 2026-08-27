@@ -12,64 +12,28 @@
 
 #include "woody_woodpacker.h"
 
-// DETERMINE WRITING POSITION IN FILE
 uint64_t  get_writing_point(t_woody *wood)
 {
-	// If section header table exists, overwrite it (reuse space)
-    if (wood->format == ELF32 && wood->file_len > wood->e_shoff && wood->e_shoff != 0)
+    if (wood->format == ELF64 && wood->file_len > wood->e_shoff && wood->e_shoff != 0)
         return wood->e_shoff;
-    else if (wood->format == ELF64 && wood->file_len > wood->e_shoff && wood->e_shoff != 0)
-        return wood->e_shoff;
-    return wood->file_len;			// Otherwise append to end of file
+    return wood->file_len;
 }
 
-// 32-BIT: PATCH STUB AND ELF HEADER
-static int  create32(t_woody *wood)
-{
-    void        *to_change;
-    uint32_t    original_entry;
-    uint32_t    new_addr;
-
-    original_entry = wood->header->elf32.e_entry;
-    wood->header->elf32.e_entry = wood->mem_start; //point to stub
-
-	// INVALIDATE SECTION HEADERS
-    wood->header->elf32.e_shoff = 0;
-    wood->header->elf32.e_shnum = 0;
-    wood->header->elf32.e_shstrndx = 0;
-    wood->header->elf32.e_shentsize = 0;
-
-	// FIND 0x42424242 PLACEHOLDER IN STUB
-    to_change = ft_memnmem((void *)wood->stub, "\x42\x42\x42\x42", 4, wood->stub_size);
-    if (to_change == 0)
-    {
-        wood->error = "invalid stub provided.";
-        return (0);
-    }
-
-    new_addr = wood->header->elf32.e_entry - original_entry;
-    ft_memcpy(to_change, &new_addr, sizeof(new_addr));
-    return (1);
-}
-
-// 64-BIT: PATCH STUB AND ELF HEADER
 static int  create64(t_woody *wood)
 {
     void        *to_change;
-    void        *to_encrypt;		// Pointer to "WOODY" marker string
+    void        *to_encrypt;
     uint64_t    original_entry;
     uint64_t    new_addr;
 
     original_entry = wood->header->elf64.e_entry;
     wood->header->elf64.e_entry = wood->mem_start;
 
-	// INVALIDATE SECTION HEADERS
     wood->header->elf64.e_shoff = 0;
     wood->header->elf64.e_shnum = 0;
     wood->header->elf64.e_shstrndx = 0;
     wood->header->elf64.e_shentsize = 0;
 
-	// FIND 8-BYTE PLACEHOLDER IN 64-BIT STUB
     to_change = ft_memnmem((void *)wood->stub, "\x42\x42\x42\x42\x42\x42\x42\x42", 8, wood->stub_size);
     if (to_change == 0)
     {
@@ -80,16 +44,21 @@ static int  create64(t_woody *wood)
     new_addr = wood->header->elf64.e_entry - original_entry;
     ft_memcpy(to_change, &new_addr, sizeof(new_addr));
 
-	// SELF-ENCRYPT THE "WOODY" MARKER STRING
+    to_change = ft_memnmem((void *)wood->stub, "\x67\x67\x67\x67\x67\x67\x67\x67", 8, wood->stub_size);
+    if (to_change == 0)
+    {
+        wood->error = "invalid stub provided.";
+        return (0);
+    }
+    ft_memcpy(to_change, &wood->key, sizeof(wood->key));
     to_encrypt = ft_memnmem((void *)wood->stub, "....WOODY....\n", 14, wood->stub_size);
     if (to_encrypt)
     {
-        speack_encrypt(to_encrypt, 16);
+        speack_encrypt(wood, to_encrypt, 16);
     }
     return (1);
 }
 
-// MAIN: BUILD PACKED BINARY FILE
 int create_woody(t_woody *wood)
 {
     t_list          *lst;
@@ -105,9 +74,7 @@ int create_woody(t_woody *wood)
         return (0);
     }
 
-    if (wood->format == ELF32 && create32(wood) == 0)
-        return (0);
-    else if (wood->format == ELF64 && create64(wood) == 0)
+    if (wood->format == ELF64 && create64(wood) == 0)
         return (0);
 	
     write(fd, wood->file, get_writing_point(wood));
@@ -117,13 +84,9 @@ int create_woody(t_woody *wood)
     lst_len = ft_lstsize(lst);
     write(fd, &lst_len, 8);
 
-	// Write each encrypted segment record
     while (lst)
     {
         pt = lst->content;
-
-		// BUG: Uses ELF64 e_entry for BOTH 32-bit and 64-bit
-        // 32-bit binaries would read garbage here!
         offset = wood->header->elf64.e_entry - pt->memo_offset;
         write(fd, &offset, 8);
         write(fd, &pt->size, 8);

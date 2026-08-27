@@ -26,8 +26,10 @@ int	main(int argc, char **argv)
 	// Map the original ELF file into memory
 	if (map_file(&wood, argv[1]) == 0)
 		goto error;
-	
-	// Parse and extract ELF header (32 or 64 bit based on magic number)
+	if (generate_key(&wood) == 0)
+		goto error;
+	printf("key : 0x%lx\n", wood.key[0]);
+	// Parse and extract ELF header (64 bit based on magic number)
 	if (extract_header(&wood) == 0)
 		goto error;
 	

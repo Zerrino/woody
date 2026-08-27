@@ -24,7 +24,7 @@ INC_DIR = include
 LIBFT_DIR   := libft
 LIBFT       := $(LIBFT_DIR)/libft.a
 
-SRC_FILES = main.c map_file.c read_elf.c extract_header.c extract_ph.c setup_load.c create_woody.c set_stub.c encrypt.c
+SRC_FILES = main.c map_file.c read_elf.c extract_header.c extract_ph.c setup_load.c create_woody.c set_stub.c encrypt.c generate_key.c
 SRCS = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 OBJS = $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 

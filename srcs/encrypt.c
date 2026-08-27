@@ -12,11 +12,6 @@
 
 #include "woody_woodpacker.h"
 
-// MASTER KEY (Hardcoded - CRITICAL SECURITY WEAKNESS)
-static uint64_t    key[2] = {0x1918111009080100, 0x1110980801000908};
-
-// Expanded round keys (generated from master key)
-static uint64_t    round_keys[ROUNDS];
 
 // Left rotation: shifts bits left, wraps around to LSB
 static uint64_t    rol(uint64_t x, int r)
@@ -30,7 +25,7 @@ static uint64_t    ror(uint64_t x, int r)
     return (x >> r) | (x << (64 - r));
 }
 
-static void    speck_key_schedule()
+static void    speck_key_schedule(uint64_t *key, uint64_t *round_keys)
 {
     static int      flag = 0;	// 🔴 STATIC FLAG - Prevents re-initialization across multiple encrypt calls
     round_keys[0] = key[0];
@@ -49,7 +44,7 @@ static void    speck_key_schedule()
     }
 }
 
-static void    speck_encrypt_128(uint64_t* x, uint64_t* y)
+static void    speck_encrypt_128(uint64_t* x, uint64_t* y, uint64_t *round_keys)
 {
     for (int i = 0; i < ROUNDS; i++)
     {
@@ -59,45 +54,21 @@ static void    speck_encrypt_128(uint64_t* x, uint64_t* y)
     }
 }
 
-static void    speck_decrypt_128(uint64_t* x, uint64_t* y)
-{
-	// Reverse through rounds (26 → 0)
-    for (int i = ROUNDS - 1; i >= 0; i--)
-    {
-        *y = ror(*y ^ *x, 3);
-        *x = rol((*x ^ round_keys[i]) - *y, 8);
-    }
-}
-
 // MULTI-BLOCK ENCRYPTION (MEM BUFFER)
-void    speack_encrypt(char *mem, size_t len)
+void    speack_encrypt(t_woody *woody, char *mem, size_t len)
 {
     size_t i;
 
     if (len < BLOCK_SIZE)
         return ;
 
-    speck_key_schedule();
+    speck_key_schedule(woody->key, woody->round_keys);
 
     i = 0;
     while (i < len)
     {
-        speck_encrypt_128((uint64_t*)&mem[i], (uint64_t*)&mem[i+8]);
+        speck_encrypt_128((uint64_t*)&mem[i], (uint64_t*)&mem[i+8], woody->round_keys);
         i += BLOCK_SIZE;
     }
 }
 
-// MULTI-BLOCK DECRYPTION (MEM BUFFER)
-void    speack_decrypt(char *mem, size_t len)
-{
-    size_t i;
-
-    if (len < BLOCK_SIZE)
-        return ;
-    i = 0;
-    while (i < len)
-    {
-        speck_decrypt_128((uint64_t*)&mem[i], (uint64_t*)&mem[i+8]);
-        i += BLOCK_SIZE;
-    }
-}

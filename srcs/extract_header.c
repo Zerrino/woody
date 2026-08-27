@@ -24,7 +24,10 @@ int	extract_header(t_woody *woody)
 	woody->format = ((char *)woody->header)[EI_CLASS];
 
 	if (woody->format == ELF32)
-		woody->e_shoff = woody->header->elf32.e_shoff;
+	{
+		woody->error = "elf32 bit format isn't handled.";
+		return (0);
+	}
 	else
 		woody->e_shoff = woody->header->elf64.e_shoff;
 	return (1);
