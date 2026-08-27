@@ -77,7 +77,4 @@ void		*read_elf(t_woody *wood, int size);
 void		setup_load(t_woody *wood, void *pt_note);
 void		speack_encrypt(t_woody *wood, char *mem, size_t len);
 
-#endif# ============================================
-# STUB ASSEMBLER & HEXDUMP CONVERTER
-# Converts NASM assembly to C-compatible byte array format
-# ============================================
+#endif
