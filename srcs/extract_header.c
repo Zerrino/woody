@@ -14,7 +14,6 @@
 
 int	extract_header(t_woody *woody)
 {
-	// Validate ELF format
 	woody->header = read_elf(woody, 0x40);
 	if (!woody->header || ft_memcmp(woody->header, "\x7F" "ELF", 4))
 	{

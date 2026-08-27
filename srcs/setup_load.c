@@ -12,13 +12,11 @@
 
 #include "woody_woodpacker.h"
 
-// ROUND UP TO NEXT PAGE SIZE (4KB)
 static uint64_t rounding_up(uint64_t mem)
 {
     return ((mem & ~0xfff) + 0x1000);
 }
 
-// 64-BIT: SETUP PT_NOTE AS EXECUTABLE LOAD SEGMENT
 static void    setup_load64(t_woody *wood, Elf64_Phdr *pt_note)
 {
     pt_note->p_type = 1;
@@ -26,8 +24,6 @@ static void    setup_load64(t_woody *wood, Elf64_Phdr *pt_note)
     pt_note->p_offset = get_writing_point(wood);
     pt_note->p_paddr = get_writing_point(wood);
     pt_note->p_vaddr = rounding_up(wood->biggest_mem_used) + (get_writing_point(wood) & 0xfff);
-
-	// MEMORY SIZE INCLUDES ENCRYPTED SEGMENT TABLE!
     pt_note->p_memsz = wood->stub_size + 0x8 + (ft_lstsize(wood->pt_encrypted) * 0x10);
     pt_note->p_filesz = wood->stub_size + 0x8 + (ft_lstsize(wood->pt_encrypted) * 0x10);
     pt_note->p_align = 0x1000;
@@ -35,7 +31,6 @@ static void    setup_load64(t_woody *wood, Elf64_Phdr *pt_note)
     wood->mem_start = pt_note->p_vaddr;
 }
 
-// DISPATCH 32/64-BIT SETUP
 void    setup_load(t_woody *wood, void *pt_note)
 {
     setup_load64(wood, pt_note);

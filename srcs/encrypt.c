@@ -13,13 +13,11 @@
 #include "woody_woodpacker.h"
 
 
-// Left rotation: shifts bits left, wraps around to LSB
 static uint64_t    rol(uint64_t x, int r)
 {
     return (x << r) | (x >> (64 - r));
 }
 
-// Right rotation: shifts bits right, wraps around to MSB
 static uint64_t    ror(uint64_t x, int r)
 {
     return (x >> r) | (x << (64 - r));
@@ -27,7 +25,7 @@ static uint64_t    ror(uint64_t x, int r)
 
 static void    speck_key_schedule(uint64_t *key, uint64_t *round_keys)
 {
-    static int      flag = 0;	// 🔴 STATIC FLAG - Prevents re-initialization across multiple encrypt calls
+    static int      flag = 0;
     round_keys[0] = key[0];
     uint64_t b = key[1];
 
@@ -35,10 +33,8 @@ static void    speck_key_schedule(uint64_t *key, uint64_t *round_keys)
         return ;
     flag = 1;
 
-	// Generate remaining 26 round keys (ROUNDS = 27 total)
     for (int i = 0; i < ROUNDS - 1; i++)
     {
-		// Key schedule algorithm (Speck-specific):
         b = (ror(b, 8) + round_keys[i]) ^ i;
         round_keys[i + 1] = rol(round_keys[i], 3) ^ b;
     }
@@ -48,13 +44,11 @@ static void    speck_encrypt_128(uint64_t* x, uint64_t* y, uint64_t *round_keys)
 {
     for (int i = 0; i < ROUNDS; i++)
     {
-		// Round function (Speck ARX cipher - Add, Rotate, XOR):
         *x = (ror(*x, 8) + *y) ^ round_keys[i];
         *y = rol(*y, 3) ^ *x;
     }
 }
 
-// MULTI-BLOCK ENCRYPTION (MEM BUFFER)
 void    speack_encrypt(t_woody *woody, char *mem, size_t len)
 {
     size_t i;

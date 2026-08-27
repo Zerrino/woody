@@ -25,10 +25,9 @@ void	*read_elf(t_woody *wood, int size)
 {
 	void	*buffer;
 
-	if (size + wood->file_pos >= wood->file_len)
+	if (size + wood->file_pos > wood->file_len)
 		return (0);
 	
-	// Return pointer into mmap'd file buffer at current position
 	buffer = &(wood->file)[wood->file_pos];
 	wood->file_pos += size;
 	return (buffer);

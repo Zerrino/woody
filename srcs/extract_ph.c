@@ -37,7 +37,6 @@ uint64_t	get_program_entry(t_woody *woody)
 	return (woody->header->elf64.e_entry);
 }
 
-// ENCRYPT PT_LOAD SEGMENT (64-bit only)
 static int	encrypt_pt_load64(t_woody *wood, void *ph)
 {
 	t_list			*new_lst;
@@ -63,14 +62,10 @@ static int	encrypt_pt_load64(t_woody *wood, void *ph)
 	}
 
 	ft_lstadd_back(&wood->pt_encrypted, new_lst);
-
-	// APPLY SPECK ENCRYPTION TO FILE DATA
-	printf("here!\n");
 	speack_encrypt(wood, (char *)&wood->file[new_pt->file_offset], new_pt->size);
 	return (1);
 }
 
-// MAIN: EXTRACT PROGRAM HEADERS
 int	extract_ph(t_woody *wood)
 {
 	int				i;
@@ -92,44 +87,34 @@ int	extract_ph(t_woody *wood)
 	i = 0;
 	while (i < ph_number)
 	{
-		// Read next PH from mmap'd file buffer (advances file_pos)
 		ph = read_elf(wood, ph_size);
 		if (!ph)
 		{
 			wood->error = "failed to read the program header.";
 			return (0);
 		}
-
-		// Look for PT_NOTE segment - stores metadata/signature
 		if (wood->pt_note == 0 && wood->format == ELF64 && ((Elf64_Phdr *)ph)->p_type == PT_NOTE)
 			wood->pt_note = ph;
 
 		if (wood->biggest_mem_used < get_biggest_mem(ph))
 			wood->biggest_mem_used = get_biggest_mem(ph);
 
-		// 64-bit: Check PT_LOAD + PF_X
 		if (wood->format == ELF64 && ((Elf64_Phdr *)ph)->p_type == PT_LOAD
 				&& ((Elf64_Phdr *)ph)->p_flags & PF_X)
 		{
-			// Encrypt this segment!
 			if (encrypt_pt_load64(wood, ph) == 0)
 				return (0);
-
-			// Modify segment flags: add WRITE permission (PT_LOAD becomes RWX?)
 			((Elf64_Phdr *)ph)->p_flags |= PF_W;
 		}
 		i++;
 	}
 
-	// 🔴 CRITICAL CHECK: PT_NOTE MUST EXIST
-	// If no PT_NOTE segment was found, packing fails completely
 	if (wood->pt_note == 0)
 	{
 		wood->error = "failed to pack.";
 		return (0);
 	}
 
-	// Set up PT_NOTE segment (injects stub or metadata here)
 	setup_load(wood, wood->pt_note);
 	return (1);
 }

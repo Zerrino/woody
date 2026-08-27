@@ -24,14 +24,12 @@
 #define ROUNDS 27
 #define BLOCK_SIZE 16
 
-// Represents ELF bitness: ELF32 (32-bit) or ELF64 (64-bit)
 typedef enum e_bit
 {
 	ELF32 = 1,
 	ELF64 = 2
 }	t_bit;
 
-// Tracks an encrypted segment's mapping between file and memory offsets
 typedef struct s_pt_encrypted
 {
 	uint64_t	file_offset;
@@ -39,7 +37,6 @@ typedef struct s_pt_encrypted
 	uint64_t	size;
 }	t_pt_encrypted;
 
-// Main packer context structure - holds all state during packing operation
 typedef struct s_woody
 {
 	uint8_t	*file;
@@ -48,7 +45,6 @@ typedef struct s_woody
 	int		format;
 	void	*pt_note;
 
-	// Union to handle both ELF versions - same pointer can cast to either
 	union
 	{
 		Elf32_Ehdr	elf32;
@@ -81,4 +77,7 @@ void		*read_elf(t_woody *wood, int size);
 void		setup_load(t_woody *wood, void *pt_note);
 void		speack_encrypt(t_woody *wood, char *mem, size_t len);
 
-#endif
+#endif# ============================================
+# STUB ASSEMBLER & HEXDUMP CONVERTER
+# Converts NASM assembly to C-compatible byte array format
+# ============================================

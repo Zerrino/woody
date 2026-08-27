@@ -16,8 +16,6 @@ static int stub64(t_woody *wood)
 {
     char    *mem_stub;
 
-	// Hardcoded assembly stub as raw byte array (~640+ bytes)
-	// See file: stub64.s
     char    stub[] =
     {
         0xeb, 0x10, 0x2e, 0x2e, 0x2e, 0x2e, 0x57, 0x4f, 0x4f, 0x44, 0x59, 0x2e,
