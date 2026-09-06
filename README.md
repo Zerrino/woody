@@ -45,7 +45,7 @@ Your project must be written in `C` (the version is up to you) and submit a make
 Let's go back to the premises of packers. An interesting research paper ("*Revealing Packed Malware*", Wei YAN, Zheng ZHANG, 2007) states the following
 
 > ### The packer problem
-> To evade malicious content detection, malware authors use **packers**, binary tools that instigate code [[obfuscation]]. By using executable packers, modern malware can completely bypass personal firewalls and antivirus (AV) scanners.
+> To evade malicious content detection, malware authors use **packers**, binary tools that instigate code obfuscation. By using executable packers, modern malware can completely bypass personal firewalls and antivirus (AV) scanners.
 > [...]
 > **Packers** are software programs that compress and encrypt other executable files in a disk and restore the original executable images when the packed files are loaded into memories. A packed file is a type of archived file, so we can’t say that just because a file is packed, it’s bad. Some commercial packers help protect Windows applications against modern cracking tools by putting those applications into a strong protection “shell.”
 > [...]
@@ -66,7 +66,7 @@ Let's go back to the premises of packers. An interesting research paper ("*Revea
 >
 > To perform packing, a packer first parses PE/ELF internal structures. Then, it reorganizes PE/ELF headers, sections, import tables, and export tables into new structures and attaches a code segment that the malware will invoke before the OEP. This code is called the `stub`, and it decompresses the original data and locates the OEP (original entry point).
 >
-> During packing, a packer compresses and encrypts the code and resource sections using the compression and encryption libraries. With randomization, the packer can also generate different variants of a single file every time the file is packed. For some powerful packers, the [[polymorphism]] engine also adds a protection layer against RE and debugging. Generally, when a computer invokes a packed file, the packer **stub** will first be invoked to unpack the file in the memory, and then the codes in the original file will get executed. There are several steps the stub engine needs to follow:
+> During packing, a packer compresses and encrypts the code and resource sections using the compression and encryption libraries. With randomization, the packer can also generate different variants of a single file every time the file is packed. For some powerful packers, the polymorphism engine also adds a protection layer against RE and debugging. Generally, when a computer invokes a packed file, the packer **stub** will first be invoked to unpack the file in the memory, and then the codes in the original file will get executed. There are several steps the stub engine needs to follow:
 > - Save register context at the entry point
 > - Decrypt and decompress the code and data sections
 > - Load and link the libraries and APIs that the original executable imported
