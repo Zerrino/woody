@@ -8,6 +8,18 @@ The goal of this project is to code a program that will
 - A new program called `woody` will be generated from this execution.
 - When this new program (`woody`) will be executed, it will have to be decrypted to be run. Its execution has to be totally identical to the program given as parameter in the last step. Even though we won’t get into compression possibilities directly in this subject, we strongly advise you to explore the possible methods!
 
+## How To?
+
+```bash
+make
+
+# infect the file
+./woody_woodpacker <file=elf64_bin>
+
+# run the infected file
+./woody
+```
+
 ## General Instructions
 
 Your project must be written in `C` (the version is up to you) and submit a makefile with the usual rules.
@@ -30,9 +42,8 @@ Your project must be written in `C` (the version is up to you) and submit a make
 
 ## Quick Theory about Packers
 
-Let's go back to the premises of packers. An interesting research paper from 2007 states the following:
+Let's go back to the premises of packers. An interesting research paper ("*Revealing Packed Malware*", Wei YAN, Zheng ZHANG, 2007) states the following
 
-> [!note] "*Revealing Packed Malware*", Wei YAN, Zheng ZHANG, 2007
 > ### The packer problem
 > To evade malicious content detection, malware authors use **packers**, binary tools that instigate code [[obfuscation]]. By using executable packers, modern malware can completely bypass personal firewalls and antivirus (AV) scanners.
 > [...]
@@ -43,7 +54,6 @@ Let's go back to the premises of packers. An interesting research paper from 200
 > Packed malware must unpack itself at runtime before it executes, and so security researchers can use RE tools to find the exact moment and location at which the original data will be uncompressed and available.
 > [...]
 
-> [!note]- "*Revealing Packed Malware*", Wei YAN, Zheng ZHANG, 2007
 > ### How packers work
 > *ndlr; the paper is explaining PE format, which does not belong to this project, so we skip it*
 >
@@ -65,7 +75,6 @@ Let's go back to the premises of packers. An interesting research paper from 200
 >
 > Another obfuscation technology is *API call redirection*, which aims to make an executable file smaller and prevent it from running if a security application doesn’t unpack it correctly.
 
-> [!note]- "*Revealing Packed Malware*", Wei YAN, Zheng ZHANG, 2007
 > ### Unpacking malware
 > Unpacking is the process of stripping the packer layer (or layers) off packed executables to restore the original contents[...]. We can use three different techniques to unpack a packed file: *manual unpacking*, *static unpacking*, or *generic unpacking*.
 > [...]
