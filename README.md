@@ -86,7 +86,8 @@ Let's go back to the premises of packers. An interesting research paper ("*Revea
 
 ## Project reflections and choices
 
-- **Infection Method** - *Code Cave Injection* - Every executable format aligns sections/segments to page boundaries (typically 4096 bytes). This alignment creates **gaps** — unused padding bytes between the end of actual section content and the next aligned offset. The stub gets injected into one of these caves. The original entry point is patched to point to the cave. After decryption, the stub jumps back to the original OEP. **No new sections or segments are added** — making this the most portable and least detectable method.
+- **Infection Method** - *PT_NOTE* Most ELF64 binary have in their program section a **PT_NOTE** or even multiple one, it's not useful at the run time, also a easy functionnality of the ELF64 format is that no matter the nature of the program section, it will always be the same size, which mean we can convert it easily in a **PT_LOAD** which can be used to describe code. So with our new **PT_LOAD** we will at the end of the file or the begining of the program header section put our unpacker which will uncrypt the crypted code at runtime, and after that part we will jump back to the start of the original code.
+ 
 - **Cipher** - *SPECK-128/256*
 	- Security properties checklist:
 	- Unpredictability - ✅ - Without knowing internal state
